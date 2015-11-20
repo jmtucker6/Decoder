@@ -12,6 +12,8 @@ struct Node {
 Node* constructBST(std::string in[], std::string pre[], int n);
 int getIndex(std::string arr[], int size, std::string val);
 std::vector<std::string> fillVector(std::vector<std::string>, std::string);
+bool isLeaf(Node*);
+char getChar(std::string);
 
 int main(int argc, char* argv[]) {
 	if (argc != 2) {
@@ -24,6 +26,7 @@ int main(int argc, char* argv[]) {
 
 	getline(treeInput, preorderTraversal);
 	getline(treeInput, inorderTraversal);
+	treeInput.close();
 
 	std::vector<std::string> inorder;
 	std::vector<std::string> preorder;
@@ -35,6 +38,20 @@ int main(int argc, char* argv[]) {
 	std::string *pre = &preorder[0];
 
 	Node *tree = constructBST(in, pre, inorder.size());
+
+	std::ifstream codeInput("code.txt");
+	char c;
+	Node *ptr = tree;
+	while (codeInput.get(c)) {
+		if (c == '0')
+			ptr = ptr->left;
+		else if (c == '1')
+			ptr = ptr->right;
+		if (isLeaf(ptr)) {
+			std::cout << getChar(ptr->value);
+			ptr = tree;
+		}
+	}
 
 	return 0;
 }
@@ -66,4 +83,20 @@ std::vector<std::string> fillVector(std::vector<std::string> v, std::string s) {
 		v.push_back(temp);
 	}
 	return v;
+}
+
+bool isLeaf(Node* n) {
+	if (n->left == NULL && n->right == NULL) {
+		return true;
+	}
+	return false;
+}
+
+char getChar(std::string s) {
+	s = s.substr(2, s.length() - 2);
+	std::stringstream stream(s);
+	int value;
+	stream >> value;
+	char c = (char) value;
+	return c;
 }
